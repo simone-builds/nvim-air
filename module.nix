@@ -151,6 +151,22 @@ in
       };
 
       # --- Look and feel ---
+      # DankMaterialShell regenerates this from the wallpaper
+      # through matugen, and every DMS integration reads it,
+      # so it survives changes to their per-editor templates.
+      # Empty means the default location under the XDG cache.
+      theme.colors_file = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = ''
+          Path to the DankMaterialShell palette
+          (dms-colors.json). When empty it is looked up at
+          $XDG_CACHE_HOME/DankMaterialShell/dms-colors.json.
+          If the file is missing the config falls back to the
+          built-in palette in lua/core/palette.lua.
+        '';
+      };
+
       nerd_font.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -379,7 +395,8 @@ in
               lazy = false;
             }
 
-            # Theme (palette lives in lua/plugins/dankcolors.lua)
+            # Theme. The palette comes from the desktop, see
+            # lua/core/palette.lua; this only paints it on.
             base16-nvim
 
             # Interface

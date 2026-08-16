@@ -3,6 +3,20 @@
 -- In-buffer rendering and inline images. Browser preview
 -- (markdown-preview.nvim) was dropped: it pulls in about
 -- 300 MB of nodejs.
+--
+-- No colour is named here. `MdAccent` and `MdSoft` come from
+-- lua/core/theme.lua, which derives them from the desktop
+-- palette, so the buffer follows the wallpaper.
+
+local nerd = require("core.setting").bool(true, "settings", "nerd_font", "enable")
+
+-- Heading markers. The numbered circles state the level at a
+-- glance, which hashes do not: counting `####` is work, and
+-- with `position = "overlay"` the marker is all you see.
+-- Without a Nerd Font the glyphs would be empty boxes, so
+-- the hashes come back.
+local heading_icons = nerd and { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " }
+	or { "# ", "## ", "### ", "#### ", "##### ", "###### " }
 
 return {
 	-- Colours, icons and layout inside the buffer --
@@ -15,18 +29,12 @@ return {
 
 		ft = { "markdown" },
 
+		-- Emphasis colours used to be set from a ColorScheme
+		-- autocmd registered here. It never fired: this runs
+		-- when the first .md buffer opens, long after the
+		-- colorscheme was applied. They live in core/theme.lua now.
 		after = function(plugin)
 			require("render-markdown").setup(plugin.opts or {})
-			-- Bold and italic take the heading colour
-			vim.api.nvim_create_autocmd("ColorScheme", {
-				callback = function()
-					local h1_hl = vim.api.nvim_get_hl(0, { name = "RenderMarkdownH1", link = false })
-					if h1_hl.fg then
-						vim.api.nvim_set_hl(0, "@markup.strong.markdown_inline", { fg = h1_hl.fg, bold = true })
-						vim.api.nvim_set_hl(0, "@markup.italic.markdown_inline", { fg = h1_hl.fg, italic = true })
-					end
-				end,
-			})
 		end,
 
 		opts = {
@@ -34,8 +42,7 @@ return {
 				enabled = true,
 				sign = true,
 				position = "overlay",
-				-- Headings keep the real hashes, just coloured
-				icons = { "# ", "## ", "### ", "#### ", "##### ", "###### " },
+				icons = heading_icons,
 				signs = { "󰫎 " },
 				width = "full",
 				left_margin = 0,
@@ -48,13 +55,15 @@ return {
 				above = "▁",
 				below = "▔",
 				backgrounds = {},
+				-- All six levels share one group: the glyph
+				-- already says which level it is
 				foregrounds = {
-					"RenderMarkdownLink",
-					"RenderMarkdownLink",
-					"RenderMarkdownLink",
-					"RenderMarkdownLink",
-					"RenderMarkdownLink",
-					"RenderMarkdownLink",
+					"MdHeading",
+					"MdHeading",
+					"MdHeading",
+					"MdHeading",
+					"MdHeading",
+					"MdHeading",
 				},
 			},
 			paragraph = {
@@ -93,7 +102,16 @@ return {
 			},
 			bullet = {
 				enabled = true,
-				icons = { " ", " ", " ", " " },
+				-- One glyph per nesting level. These were four
+				-- spaces: the marker was drawn as blank, so the
+				-- `-` looked missing everywhere except under the
+				-- cursor and inside a visual selection, the two
+				-- places anti-conceal turns rendering off.
+				-- Plain Unicode, no Nerd Font needed. The second
+				-- level is U+2B29 BLACK SMALL DIAMOND, not the
+				-- full-size U+25C6: it has to match the weight
+				-- of the bullet above it, not outshout it.
+				icons = { "•", "⬩", "-", "-" },
 				ordered_icons = function(ctx)
 					local value = vim.trim(ctx.value)
 					local index = tonumber(value:sub(1, #value - 1))
@@ -101,20 +119,20 @@ return {
 				end,
 				left_pad = 0,
 				right_pad = 0,
-				highlight = "RenderMarkdownH1",
+				highlight = "MdAccent",
 			},
 			checkbox = {
 				enabled = true,
 				unchecked = {
 					icon = "",
-					highlight = "RenderMarkdownH1",
+					highlight = "MdAccent",
 				},
 				checked = {
 					icon = "󰄲",
-					highlight = "RenderMarkdownH1",
+					highlight = "MdAccent",
 				},
 				custom = {
-					todo = { raw = "[-]", rendered = "󰥔 ", highlight = "RenderMarkdownH3", scope_highlight = nil },
+					todo = { raw = "[-]", rendered = "󰥔 ", highlight = "MdSoft", scope_highlight = nil },
 					important = { raw = "[~]", rendered = "󰓎 ", highlight = "DiagnosticWarn" },
 				},
 			},
