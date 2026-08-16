@@ -56,6 +56,49 @@ function M.blend(top, bottom, alpha)
 	return string.format("#%02x%02x%02x", mix(tr, br), mix(tg, bg), mix(tb, bb))
 end
 
+-- WCAG relative luminance.
+local function luminance(hex)
+	local r, g, b = to_rgb(hex)
+	local function channel(v)
+		v = v / 255
+		if v <= 0.03928 then
+			return v / 12.92
+		end
+		return ((v + 0.055) / 1.055) ^ 2.4
+	end
+	return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+end
+
+-- Contrast ratio, 1 (identical) to 21 (black on white).
+function M.contrast(a, b)
+	local la, lb = luminance(a), luminance(b)
+	if la < lb then
+		la, lb = lb, la
+	end
+	return (la + 0.05) / (lb + 0.05)
+end
+
+-- Fade `colour` toward `toward` until it clears `target`
+-- contrast against `bg`.
+--
+-- matugen derives the ANSI colours from the wallpaper, so how
+-- legible any of them happens to be is luck: a saturated red
+-- on a near-black background can land around 5:1 while the
+-- body text sits above 14:1. Pinning a lighter shade by hand
+-- would only hold until the next wallpaper.
+function M.readable(colour, bg, toward, target)
+	local keep = 1.0
+	local out = colour
+	while keep > 0.05 do
+		if M.contrast(out, bg) >= target then
+			return out
+		end
+		keep = keep - 0.05
+		out = M.blend(colour, toward, keep)
+	end
+	return out
+end
+
 -- FALLBACK
 --------------------------------------------------
 -- Outside DMS the config still has to produce a readable
@@ -96,6 +139,12 @@ local fallback = {
 -- `primary_fixed`, is so close to `on_surface` that emphasis
 -- would vanish into the paragraph -- so it is mixed here.
 local ACCENT_MIX = 0.5
+
+-- Contrast the inline code colour has to reach against the
+-- background. 7:1 is the WCAG AAA bar for body-size text,
+-- which is what inline code is: it sits inside a paragraph
+-- and gets read at the same speed as the words around it.
+local CODE_CONTRAST = 7
 
 -- LOADING
 --------------------------------------------------
@@ -174,6 +223,7 @@ function M.load()
 	end
 
 	p.accent_mid = M.blend(p.accent, p.fg, ACCENT_MIX)
+	p.code = M.readable(p.red, p.bg, p.fg, CODE_CONTRAST)
 	return p
 end
 

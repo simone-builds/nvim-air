@@ -131,7 +131,6 @@ local function syntax(p)
 	local hl = vim.api.nvim_set_hl
 
 	hl(0, "Visual", { bg = p.sel, fg = p.fg, bold = true })
-	hl(0, "Statusline", { bg = p.accent, fg = p.bg })
 	hl(0, "LineNr", { fg = p.muted })
 	hl(0, "CursorLineNr", { fg = p.accent, bold = true })
 
@@ -198,7 +197,44 @@ local function markdown(p)
 	-- to ColorColumn by default, and a link would drag its
 	-- background back in on the next colorscheme pass
 	hl(0, "RenderMarkdownCode", { bg = "NONE" })
-	hl(0, "RenderMarkdownCodeInline", { bg = "NONE", fg = p.red })
+	hl(0, "RenderMarkdownCodeInline", { bg = "NONE", fg = p.code })
+
+	-- Both halves of inline code, or it changes colour as the
+	-- cursor moves: render-markdown draws the extmark above,
+	-- but anti-conceal drops it on the cursor line and the
+	-- text falls back to the treesitter capture below.
+	hl(0, "@markup.raw.markdown_inline", { fg = p.code })
+end
+
+-- --- Statusline ---
+-- A lualine theme built from the palette, every section
+-- transparent.
+--
+-- lualine's own `auto` theme reads the colorscheme at the
+-- moment it is built, and lualine loads before the palette is
+-- applied, so it was picking up the stock Neovim greys: the
+-- bar never matched the desktop and never would have.
+--
+-- Only a, b and c are listed because lualine mirrors them --
+-- z reuses a, y reuses b, x reuses c -- so six sections come
+-- out of three definitions.
+function M.lualine()
+	local p = M.colors or palette.load()
+	local function section(mode)
+		return {
+			a = { fg = mode, bg = "NONE", gui = "bold" },
+			b = { fg = p.fg_dim, bg = "NONE" },
+			c = { fg = p.muted, bg = "NONE" },
+		}
+	end
+	return {
+		normal = section(p.accent),
+		insert = section(p.green),
+		visual = section(p.third),
+		replace = section(p.red),
+		command = section(p.yellow),
+		inactive = section(p.muted),
+	}
 end
 
 -- Apply the palette from scratch.
