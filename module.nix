@@ -1,4 +1,4 @@
-# WRAPPER MODULE nvim-air
+# WRAPPER MODULE airnvim
 # ------------------------------------------------
 inputs:
 {
@@ -261,7 +261,7 @@ in
   # CONFIGURATION
   # ------------------------------------------------
   config = {
-    # The binary stays `nvim`, `nvim-air` is an alias
+    # The binary stays `nvim`, with `nv` as its only alias
     binName = "nvim";
 
     # Providers for remote plugins written in other languages:

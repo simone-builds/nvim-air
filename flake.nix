@@ -1,5 +1,5 @@
 {
-  description = "nvim-air: a flake exporting a small, fast Neovim";
+  description = "airnvim: a flake exporting a small, fast Neovim";
 
   # INPUTS
   # ------------------------------------------------
@@ -45,34 +45,34 @@
       perSystem =
         { config, ... }:
         {
-          packages.default = config.packages.nvim-air;
+          packages.default = config.packages.airnvim;
         };
 
       flake = {
-        # The wrapper lives under `wrappers.nvim-air`
-        wrappers.nvim-air = nixpkgs.lib.modules.importApply ./module.nix inputs;
+        # The wrapper lives under `wrappers.airnvim`
+        wrappers.airnvim = nixpkgs.lib.modules.importApply ./module.nix inputs;
 
         nixosModules = {
-          nvim-air = wrappers.lib.getInstallModule {
-            name = "nvim-air";
-            value = self.wrapperModules.nvim-air;
+          airnvim = wrappers.lib.getInstallModule {
+            name = "airnvim";
+            value = self.wrapperModules.airnvim;
           };
-          default = self.nixosModules.nvim-air;
+          default = self.nixosModules.airnvim;
         };
 
         homeModules = {
-          nvim-air = wrappers.lib.getInstallModule {
-            name = "nvim-air";
-            value = self.wrapperModules.nvim-air;
+          airnvim = wrappers.lib.getInstallModule {
+            name = "airnvim";
+            value = self.wrapperModules.airnvim;
           };
-          default = self.homeModules.nvim-air;
+          default = self.homeModules.airnvim;
         };
 
         overlays = {
-          nvim-air = final: _: {
-            nvim-air = self.wrappers.nvim-air.wrap { pkgs = final; };
+          airnvim = final: _: {
+            airnvim = self.wrappers.airnvim.wrap { pkgs = final; };
           };
-          default = self.overlays.nvim-air;
+          default = self.overlays.airnvim;
         };
       };
     };

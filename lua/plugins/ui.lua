@@ -99,7 +99,7 @@ return {
 					"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠁⠈⠐⠀⠘⠀⠈⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
 					"                         Neovim                       ",
 					"                                                      ",
-					"                       [nvim-air]                      ",
+					"                       [airnvim]                      ",
 				}
 
 				-- Without fortune/cowsay use the static header

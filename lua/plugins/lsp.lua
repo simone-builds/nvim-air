@@ -54,7 +54,7 @@ return {
 
 			-- Keymaps active only in buffers with an LSP --
 			vim.api.nvim_create_autocmd("LspAttach", {
-				group = vim.api.nvim_create_augroup("nvim-air-lsp-attach", { clear = true }),
+				group = vim.api.nvim_create_augroup("airnvim-lsp-attach", { clear = true }),
 				callback = function(event)
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					local bufnr = event.buf
@@ -93,7 +93,7 @@ return {
 					-- Highlight other uses of the symbol under the cursor
 					if client and client.server_capabilities.documentHighlightProvider then
 						local highlight_augroup =
-							vim.api.nvim_create_augroup("nvim-air-lsp-highlight", { clear = false })
+							vim.api.nvim_create_augroup("airnvim-lsp-highlight", { clear = false })
 						vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 							buffer = bufnr,
 							group = highlight_augroup,

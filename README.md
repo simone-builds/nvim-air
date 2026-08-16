@@ -1,4 +1,4 @@
-# nvim-air
+# airnvim
 
 A small, fast Neovim packaged with Nix. Not a config you copy into
 `~/.config/nvim` — a flake that produces one self-contained binary with
@@ -31,25 +31,25 @@ You need [Nix](https://nixos.org/download) with flakes enabled.
 
 ```sh
 # Try it without installing anything
-nix run github:<user>/nvim-air
+nix run github:<user>/airnvim
 
 # Or build it and get ./result/bin/nvim
-nix build github:<user>/nvim-air
+nix build github:<user>/airnvim
 ```
 
 ## Installing
 
-The binary is called `nvim`, with `nvim-air` and `nv` as aliases.
+The binary is called `nvim`, with `nv` as a shorter alias.
 
 ### NixOS
 
 ```nix
 {
-  inputs.nvim-air.url = "github:<user>/nvim-air";
+  inputs.airnvim.url = "github:<user>/airnvim";
 
   # in your system configuration
-  imports = [ inputs.nvim-air.nixosModules.default ];
-  wrappers.nvim-air.enable = true;
+  imports = [ inputs.airnvim.nixosModules.default ];
+  wrappers.airnvim.enable = true;
 }
 ```
 
@@ -57,24 +57,24 @@ The binary is called `nvim`, with `nvim-air` and `nv` as aliases.
 
 ```nix
 {
-  imports = [ inputs.nvim-air.homeModules.default ];
-  wrappers.nvim-air.enable = true;
+  imports = [ inputs.airnvim.homeModules.default ];
+  wrappers.airnvim.enable = true;
 }
 ```
 
 ### As an overlay
 
 ```nix
-nixpkgs.overlays = [ inputs.nvim-air.overlays.default ];
-environment.systemPackages = [ pkgs.nvim-air ];
+nixpkgs.overlays = [ inputs.airnvim.overlays.default ];
+environment.systemPackages = [ pkgs.airnvim ];
 ```
 
 ### Configuring it
 
-Every option lives under `wrappers.nvim-air.settings`:
+Every option lives under `wrappers.airnvim.settings`:
 
 ```nix
-wrappers.nvim-air = {
+wrappers.airnvim = {
   enable = true;
   settings = {
     markdown.line_length = 80;
@@ -241,7 +241,7 @@ sets up your theme.
 
 ## Options
 
-Set these under `wrappers.nvim-air.settings`.
+Set these under `wrappers.airnvim.settings`.
 
 | Option                 | Type | Default          | Effect                                              |
 | ---------------------- | ---- | ---------------- | --------------------------------------------------- |

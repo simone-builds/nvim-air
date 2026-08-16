@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Working notes for this repository: **nvim-air**, a Neovim packaged with
+Working notes for this repository: **airnvim**, a Neovim packaged with
 **Nix** (flake) through BirdeeHub's `nix-wrapper-modules`, using the
 **`lze`** / **`lzextras`** plugin loader.
 
@@ -14,15 +14,15 @@ wrapper.
 
 - `flake.nix` — inputs (`nixpkgs`, `wrappers`, `flake-parts`,
   `plugins-lze`, `plugins-lzextras`) and outputs: `packages.default`,
-  `wrappers.nvim-air`, `nixosModules`, `homeModules`, `overlays`.
+  `wrappers.airnvim`, `nixosModules`, `homeModules`, `overlays`.
 - `module.nix` — the Nix core: declares `options.settings` (feature flags),
   the `nvim-lib.pluginsFromPrefix` helper, and the `specs`, i.e. the plugin
   and package groups. Plugins, language servers and linters are added here.
 - `init.lua` — bootstrap: configures `lze`, registers the custom handlers,
   loads `core.*` and `tools`, then the specs under `lua/plugins/`.
 
-The wrapper is named `nvim-air` but the binary stays **`nvim`**
-(`binName = "nvim"`), with `nvim-air` and `nv` as aliases.
+The wrapper is named `airnvim` but the binary stays **`nvim`**
+(`binName = "nvim"`), with `nv` as its only alias.
 
 The guiding constraint is lightness: the target profile is Nix, Bash and
 Markdown daily, Lua occasionally. Anything heavier belongs behind a feature
@@ -63,7 +63,7 @@ nixInfo(false, "settings", "cats", "ai")       -- for_cat handler
 
 ```text
 init.lua              # lze bootstrap + spec loading
-flake.nix             # inputs/outputs, wrappers.nvim-air
+flake.nix             # inputs/outputs, wrappers.airnvim
 module.nix            # feature flags, specs, plugins and packages
 selene.toml           # lua lint; the "vim" std lives in vim.toml
 vim.toml              # selene standard library for neovim
