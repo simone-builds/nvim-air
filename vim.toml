@@ -1,0 +1,13 @@
+# Selene standard library for the Neovim environment.
+# Backs `std = "vim"` in selene.toml: without this file selene
+# errors out and the lua lint does not run.
+
+[selene]
+base = "lua51"
+name = "vim"
+
+[vim]
+any = true
+
+[nixInfo]
+any = true

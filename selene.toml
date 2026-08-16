@@ -1,0 +1,11 @@
+# Lua linter configuration (selene).
+# The `vim` std is defined in vim.toml, in this same folder.
+std = "vim"
+
+[lints]
+# Plugin specs are tables with mixed keys
+mixed_table = "allow"
+# `_G.nixInfo` is the intended bridge to the Nix config
+global_usage = "allow"
+# This config uses plenty of single-line `if ... end`
+multiple_statements = "allow"

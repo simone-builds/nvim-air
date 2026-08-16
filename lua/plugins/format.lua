@@ -1,0 +1,65 @@
+-- FORMAT ON SAVE
+--------------------------------------------------
+
+return {
+	"conform.nvim",
+
+	enabled = true,
+	auto_enable = false,
+	lazy = true,
+
+	event = { "BufWritePre" },
+
+	after = function(plugin)
+		local opts = plugin.opts
+		if type(opts) == "function" then
+			opts = opts()
+		end
+		require("conform").setup(opts)
+	end,
+
+	opts = function()
+		return {
+			formatters_by_ft = {
+				markdown = { "rumdl" },
+				lua = { "stylua" },
+				sh = { "shfmt" },
+				bash = { "shfmt" },
+				python = { "ruff_format" },
+			},
+			formatters = {
+				-- rumdl fixes style violations but does not rewrap
+				-- text: `textwidth` + `gq` handle that.
+				-- It reads stdin and writes diagnostics to stderr,
+				-- so the buffer stays clean.
+				rumdl = {
+					command = "rumdl",
+					args = function(_, ctx)
+						local args = require("core.rumdl").args()
+						vim.list_extend(args, {
+							"fmt",
+							"--stdin",
+							"--stdin-filename",
+							ctx.filename,
+							"--quiet",
+						})
+						return args
+					end,
+					stdin = true,
+				},
+			},
+			-- In markdown, rewrap existing text before formatting
+			-- (rumdl does not do it).
+			format_on_save = function(bufnr)
+				if vim.bo[bufnr].filetype == "markdown" then
+					require("core.mdwrap").wrap(bufnr)
+				end
+				return {
+					timeout_ms = 3000,
+					-- Nix keeps LSP-side formatting (nixfmt)
+					lsp_format = "fallback",
+				}
+			end,
+		}
+	end,
+}

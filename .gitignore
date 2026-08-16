@@ -1,0 +1,9 @@
+result
+result-*
+trash
+.git
+.DS_Store
+secrets
+keys
+*.key
+.env
