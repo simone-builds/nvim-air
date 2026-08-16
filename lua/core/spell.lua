@@ -32,7 +32,7 @@ function M.toggle(bufnr)
 		return
 	end
 
-	if not nixInfo(true, "settings", "spell", "enable") then
+	if not require("core.setting").bool(true, "settings", "spell", "enable") then
 		vim.notify("Spell checking is disabled in the Nix config", vim.log.levels.WARN)
 		return
 	end

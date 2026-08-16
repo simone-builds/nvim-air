@@ -180,7 +180,7 @@ return {
 	{
 		"image.nvim",
 
-		enabled = true,
+		enabled = require("core.setting").bool(true, "settings", "markdown", "images", "enable"),
 		auto_enable = false,
 		lazy = true,
 

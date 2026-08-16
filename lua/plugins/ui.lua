@@ -234,7 +234,7 @@ return {
 	{
 		"nvim-web-devicons",
 
-		enabled = nixInfo(true, "settings", "nerd_font", "enable"),
+		enabled = require("core.setting").bool(true, "settings", "nerd_font", "enable"),
 		auto_enable = true,
 		lazy = true,
 

@@ -160,13 +160,14 @@ constraint.
 | `obsidian.enable`      | `true`           | obsidian.nvim                                  |
 | `obsidian.vault`       | `""`             | Vault; empty keeps the plugin out of the build |
 | `markdown.line_length` | `75`             | `textwidth` in `.md` and MD013                 |
+| `markdown.images.enable` | `true`         | image.nvim; off saves 137 MB                   |
 | `spell.enable`         | `true`           | Whether `:SpellToggle` may turn spell on       |
 | `spell.languages`      | `[ "it" "en" ]`  | Dictionaries                                   |
 | `spell.filetypes`      | `[ "markdown" ]` | Where the toggle works                         |
 | `nerd_font.enable`     | `true`           | Include file-type icons                        |
 | `langs.python.enable`  | `false`          | `ruff`                                         |
 | `langs.web.enable`     | `false`          | ts/js, html, css, json servers                 |
-| `startup.cowsay`       | `true`           | `fortune \| cowsay` header                     |
+| `startup.cowsay`       | `false`          | `fortune \| cowsay` header; on costs 60 MB     |
 | `render-backend`       | `kitty`          | Image backend                                  |
 | `open.*`               | `""`             | External programs for `vim.ui.open`            |
 
@@ -322,7 +323,13 @@ so other filetypes are left alone.
   `indentexpr` cleared on `LspAttach` and `BufWinEnter`, and again inside
   `M.wrap` for safety.
 - `image.nvim` uses the `kitty` backend, which also covers WezTerm, and
-  requires `imagemagick`.
+  requires `imagemagick`. It is gated by `markdown.images.enable`: the
+  plugin reaches imagemagick through `luajit-magick`, so the weight rides
+  on the plugin and **removing the CLI package alone saves nothing**
+  (measured: identical closure before and after).
+- `startup.cowsay` defaults to off. It costs 60 MB, because cowsay is perl,
+  and ~39 ms of blocking `io.popen` at every startup. Do not turn the
+  default back on: the static header in `ui.lua` is the fallback.
 
 ## Spell checking
 
