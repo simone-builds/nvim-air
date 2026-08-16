@@ -206,6 +206,47 @@ head -c 8 spell/it.utf-8.spl   # a valid file starts with VIMspell
 Keep the `-f`: without it a 404 is written into the file as an HTML error
 page and Neovim fails with `E757: This does not look like a spell file`.
 
+### Search and replace across the project
+
+Telescope finds; [spectre](https://github.com/nvim-pack/nvim-spectre)
+finds *and* rewrites. It walks the tree from the current directory down,
+so every subfolder is included, and it edits every file in one go.
+
+Three ways in — `<leader>S` opens it empty, `<leader>sR` starts from the
+word under the cursor (or, in visual mode, from the selection), and
+`<leader>sF` restricts the search to the current file. `:Spectre` does the
+same as the first.
+
+The panel has three editable lines at the top: what to search, what to
+replace it with, and a glob to narrow the files. Results refresh as you
+type. Then:
+
+| Key | Action |
+| --- | ------ |
+| `<leader>R` | Replace everywhere |
+| `<leader>rc` | Replace only the match under the cursor |
+| `dd` | Exclude a match from the replacement |
+| `<CR>` | Jump to the file |
+| `<leader>q` | Send every result to the quickfix list |
+| `ti` | Toggle case sensitivity |
+| `th` | Include hidden files |
+| `?` | Full help |
+
+Patterns are ripgrep regexes: `\bword\b` matches whole words only,
+`(foo|bar)` alternates, and `$1` refers to a capture group in the
+replacement.
+
+Two things worth knowing. The search obeys `.gitignore` and skips hidden
+files, which is ripgrep's behaviour and the usual reason a match seems to
+be missing — `th` widens it. And the replacement runs through `sed`, which
+comes from the host rather than the build: where it is missing, `tro`
+switches to the bundled `oxi` engine, which needs no external binary and
+uses the same regex flavour as the search. `trs` switches back.
+
+For renaming a symbol in code — a function, a variable, a Nix option —
+prefer `<leader>rn`. It goes through the language server, so it renames
+what is actually that symbol instead of every string that looks like it.
+
 ### Nothing loads until it is used
 
 Every plugin declares a trigger — a filetype, a command, a keymap or an
@@ -337,9 +378,14 @@ The default is `copilot`. No credential is stored in this repository.
 **Search** — `<leader>s` is the telescope prefix: `sf` files, `sg` grep,
 `sw` word under cursor, `sb` buffers, `sh` help, `sk` keymaps, `sd`
 diagnostics, `sr` resume, `s.` recent, `sn` config files. `<leader>/`
-searches the current buffer, `<leader><leader>` lists buffers. Uppercase
-goes to spectre: `<leader>S` toggle, `sR` replace across the project, `sF`
-in the current file.
+searches the current buffer, `<leader><leader>` lists buffers.
+
+**Replace** — uppercase goes to spectre: `<leader>S` opens it empty, `sR`
+starts from the word under the cursor or the visual selection, `sF` stays
+in the current file. Inside the panel, `<leader>R` replaces everywhere,
+`<leader>rc` only under the cursor, `dd` excludes a match and `?` shows
+the rest. See [Search and replace across the
+project](#search-and-replace-across-the-project).
 
 **Git** — `<leader>gg` lazygit, `gd` open diffview, `gq` close it, `gh`
 file history, `gc` commits, `gs` status, `gb` branches.
