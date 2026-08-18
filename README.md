@@ -208,9 +208,9 @@ page and Neovim fails with `E757: This does not look like a spell file`.
 
 ### Search and replace across the project
 
-Telescope finds; [spectre](https://github.com/nvim-pack/nvim-spectre)
-finds *and* rewrites. It walks the tree from the current directory down,
-so every subfolder is included, and it edits every file in one go.
+Telescope finds; [spectre](https://github.com/nvim-pack/nvim-spectre) finds
+*and* rewrites. It walks the tree from the current directory down, so every
+subfolder is included, and it edits every file in one go.
 
 Three ways in — `<leader>S` opens it empty, `<leader>sR` starts from the
 word under the cursor (or, in visual mode, from the selection), and
@@ -272,8 +272,8 @@ derives its palette from the wallpaper. `lua/core/palette.lua` reads
 `dms-colors.json`, the file matugen regenerates on every wallpaper change,
 and `lua/core/theme.lua` paints it on through `base16-nvim`.
 
-That file is the one input deliberately **not** read from the Nix store:
-it is looked up under `$XDG_CACHE_HOME`, or wherever
+That file is the one input deliberately **not** read from the Nix store: it
+is looked up under `$XDG_CACHE_HOME`, or wherever
 `settings.theme.colors_file` points. A filesystem watcher reloads it in
 place, so changing the wallpaper recolours an editor that is already open,
 with no restart. Everything else stays pinned in the store; only the
@@ -288,8 +288,8 @@ moved once.
 The JSON names its colours after Material Design 3 roles —
 `on_surface_variant`, `primary_fixed_dim` — which describe a place in a
 phone UI rather than in an editor. `palette.lua` renames them once, so the
-rest of the config only ever speaks of `fg`, `accent` and `muted`. When
-the file is missing, a built-in palette takes over and the editor is still
+rest of the config only ever speaks of `fg`, `accent` and `muted`. When the
+file is missing, a built-in palette takes over and the editor is still
 readable.
 
 ### Weight and what it is made of
@@ -392,8 +392,8 @@ searches the current buffer, `<leader><leader>` lists buffers.
 **Replace** — uppercase goes to spectre: `<leader>S` opens it empty, `sR`
 starts from the word under the cursor or the visual selection, `sF` stays
 in the current file. Inside the panel, `<leader>R` replaces everywhere,
-`<leader>rc` only under the cursor, `dd` excludes a match and `?` shows
-the rest. See [Search and replace across the
+`<leader>rc` only under the cursor, `dd` excludes a match and `?` shows the
+rest. See [Search and replace across the
 project](#search-and-replace-across-the-project).
 
 **Git** — `<leader>gg` lazygit, `gd` open diffview, `gq` close it, `gh`
@@ -408,9 +408,9 @@ diagnostic, `<leader>ds` document symbols, `<leader>ws` workspace symbols.
 local scope. `<leader>ps` and `<leader>pS` swap parameters.
 
 **Markdown** — in visual mode the selection can be wrapped in place:
-`<C-b>` for `**bold**`, `<C-i>` for `*italic*` and ``<C-`>`` for
-`` `code` ``. For anything else, nvim-surround's `S` wraps a selection in
-any delimiter.
+`<C-b>` for `**bold**`, `<C-i>` for `*italic*` and ``<C-`>`` for `` `code`
+``. For anything else, nvim-surround's `S` wraps a selection in any
+delimiter.
 
 Two terminal quirks worth knowing. `<C-i>` and `<Tab>` are the same byte,
 so Tab italicises too. ``<C-`>`` is not an ASCII control code and only
@@ -460,16 +460,16 @@ nix path-info --closure-size -h .#default  # measure the build
 
 Flakes only copy git-tracked files into the store, so **run `git add`
 before rebuilding after creating a file** — otherwise the new module is
-missing from the package and the editor starts with
-`module '...' not found`.
+missing from the package and the editor starts with `module '...' not
+found`.
 
 ## Notes
 
 - Some binaries deliberately come from the host rather than the build:
   `git`, and whatever you point the `open.*` handlers at.
-- The palette is read from the desktop at runtime rather than pinned in
-  the store — see
-  [The palette follows the desktop](#the-palette-follows-the-desktop).
+- The palette is read from the desktop at runtime rather than pinned in the
+  store — see [The palette follows the
+  desktop](#the-palette-follows-the-desktop).
 - `exrc` is on, so project-local `.nvim.lua` files are executed.
 - The clipboard is synced with the system via `unnamedplus`.
 
