@@ -169,10 +169,26 @@ constraint.
 | `theme.colors_file`    | `""`             | Palette path; empty means the XDG cache        |
 | `nerd_font.enable`     | `true`           | Include file-type icons                        |
 | `langs.python.enable`  | `false`          | `ruff`                                         |
-| `langs.web.enable`     | `false`          | ts/js, html, css, json servers                 |
+| `langs.web.enable`     | `false`          | ts/js and html servers; costs ~225 MB of node  |
+| `langs.web.formatter.enable` | `false`    | biome formats ts/js, html, css, json; ~64 MB   |
 | `startup.cowsay`       | `false`          | `fortune \| cowsay` header; on costs 60 MB     |
 | `render-backend`       | `kitty`          | Image backend                                  |
 | `open.*`               | `""`             | External programs for `vim.ui.open`            |
+
+The two web flags are deliberately independent. `langs.web.enable` buys
+*understanding*: `ts_ls` and the html server give diagnostics, completion,
+go-to-definition and rename, and they cost ~225 MB because both are
+JavaScript and drag node in. `langs.web.formatter.enable` buys *layout*
+only, through one rust binary at ~64 MB with no node. Wanting a tidy
+`.json` is not the same as wanting type checking, so neither implies the
+other.
+
+The formatter also covers more ground than the servers. With
+`lsp_format = "fallback"` in `format.lua`, `web.enable` alone already
+formats ts/js and html on save by delegating to the servers, but nothing
+reaches `.css` and `.json`, whose servers are shipped in
+`vscode-langservers-extracted` and never wired into `lsp.lua`. Biome is
+the only route to those two.
 
 `settings.cats` is **readOnly**, derived from
 `mapAttrs (_: v: v.enable) config.specs`: every top-level spec becomes a

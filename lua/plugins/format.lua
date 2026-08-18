@@ -19,15 +19,42 @@ return {
 	end,
 
 	opts = function()
+		local by_ft = {
+			markdown = { "rumdl" },
+			lua = { "stylua" },
+			sh = { "shfmt" },
+			bash = { "shfmt" },
+			python = { "ruff_format" },
+		}
+
+		-- Web formatting, only when settings.langs.web.formatter
+		-- put biome on the PATH. It covers all of these on its
+		-- own, so it replaces the LSP fallback on ts/js and html
+		-- and is the only thing reaching css and json.
+		if vim.fn.executable("biome") == 1 then
+			for _, ft in ipairs({
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact",
+				"json",
+				"jsonc",
+				"css",
+				"html",
+			}) do
+				by_ft[ft] = { "biome" }
+			end
+		end
+
 		return {
-			formatters_by_ft = {
-				markdown = { "rumdl" },
-				lua = { "stylua" },
-				sh = { "shfmt" },
-				bash = { "shfmt" },
-				python = { "ruff_format" },
-			},
+			formatters_by_ft = by_ft,
 			formatters = {
+				-- Biome ships its html formatter switched off and
+				-- offers no way to enable it but a config file or
+				-- this flag. It is inert for the other languages.
+				biome = {
+					append_args = { "--html-formatter-enabled=true" },
+				},
 				-- rumdl fixes style violations but does not rewrap
 				-- text: `textwidth` + `gq` handle that.
 				-- It reads stdin and writes diagnostics to stderr,

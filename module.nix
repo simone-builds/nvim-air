@@ -57,7 +57,16 @@ in
       # Off by default: they weigh hundreds of MB.
       langs = {
         python.enable = lib.mkEnableOption "Python LSP/linter (ruff)";
-        web.enable = lib.mkEnableOption "web LSP (ts/js, html, css, json)";
+
+        # The two halves are independent on purpose. The servers
+        # understand the code and cost ~225 MB, almost all of it
+        # node; the formatter only rewrites the layout, weighs
+        # ~64 MB and needs no node at all. Wanting tidy json or
+        # css is not the same as wanting type checking.
+        web = {
+          enable = lib.mkEnableOption "web LSP (ts/js, html)";
+          formatter.enable = lib.mkEnableOption "web formatter (biome: ts/js, html, css, json)";
+        };
       };
 
       # --- Appearance and formatting ---
@@ -354,11 +363,14 @@ in
           ]
           # Python on demand: ruff does lsp, lint and format
           ++ lib.optional cfg.langs.python.enable ruff
-          # Web on demand: pulls in nodejs
+          # Web LSP on demand: pulls in nodejs
           ++ lib.optionals cfg.langs.web.enable [
             typescript-language-server
             vscode-langservers-extracted
-          ];
+          ]
+          # Web formatter on demand, independent of the servers:
+          # one rust binary covering ts/js, html, css and json
+          ++ lib.optional cfg.langs.web.formatter.enable biome;
       };
 
       # --- General plugins ---
