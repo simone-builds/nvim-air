@@ -370,6 +370,14 @@ so other filetypes are left alone.
 
 - Off everywhere by default. `:SpellToggle` / `<leader>z` enables it for
   the current buffer and session only; nothing is persisted.
+- `:spelltoggle` and `:spellToggle` work too. User commands **must** start
+  with a capital (`E183`), so the lowercase forms are `cnoreabbrev`
+  entries in `core/spell.lua`, not commands. They are guarded with
+  `getcmdline() ==#` so they only fire when the word is the whole command
+  line: an unguarded abbreviation would also rewrite the word inside
+  `:s//` patterns and command arguments. Cmdline completion stays
+  case-sensitive, so `:spell<Tab>` still offers only the builtins —
+  the aliases work when typed in full.
 - Several dictionaries apply at once (`spelllang = it,en`): a word passes
   if any of them contains it.
 - Code exclusion needs both halves. Neovim's core queries provide
